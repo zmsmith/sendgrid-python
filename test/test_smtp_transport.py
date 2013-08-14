@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 import unittest, fudge
 import sendgrid
 from sendgrid.transport import smtp
@@ -57,6 +59,11 @@ class TestTransports(unittest.TestCase):
         f = smtp_transport._getFileMIME({'file': 'img.png', 'name': 'contents', 'cid': 'cid'})
         self.assertEqual('<cid>', f.get('Content-ID'))
         self.assertEqual(None, f.get('Content-Disposition'))
+
+    def test_smtp_unicode(self):
+        smtp_transport = smtp.Smtp('username', 'password', tls=False)
+        smtp_transport._encodeEmail('', u'testaddress@gnómica.com')
+        smtp_transport._encodeEmail(u'gnómica', u'testaddress@gnómica.com')
 
 
 class FakeException(IOError):
